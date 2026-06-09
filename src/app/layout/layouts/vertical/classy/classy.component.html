@@ -1,0 +1,273 @@
+<!-- Loading bar -->
+<fuse-loading-bar></fuse-loading-bar>
+
+<!-- ══ Sidebar navigation ══════════════════════════════════════════════════ -->
+<fuse-vertical-navigation
+    class="dark bg-gray-900 print:hidden"
+    [mode]="isScreenSmall ? 'over' : 'side'"
+    [name]="'mainNavigation'"
+    [navigation]="navigation?.default ?? []"
+    [opened]="!isScreenSmall">
+
+    <!-- Logo + brand -->
+    <ng-container fuseVerticalNavigationContentHeader>
+        <div class="flex items-center gap-3 px-5 pt-6 pb-2">
+            <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-primary-500 flex-shrink-0">
+                <mat-icon svgIcon="heroicons_solid:building-office-2" class="!text-white !icon-size-4"></mat-icon>
+            </div>
+            <div>
+                <p class="text-[10px] uppercase tracking-widest text-gray-500 leading-none">Platform</p>
+                <p class="text-sm font-bold text-white leading-tight mt-0.5">Master ERP</p>
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="mx-4 mt-3 mb-1 border-b border-gray-700/60"></div>
+
+
+    </ng-container>
+
+    <!-- Sidebar footer -->
+    <ng-container fuseVerticalNavigationContentFooter>
+        <div class="mx-4 mb-1 border-t border-gray-700/60"></div>
+        <div class="px-4 py-3">
+            <button
+                mat-button
+                (click)="logout()"
+                class="w-full !justify-start !gap-2 !text-red-400 hover:!bg-red-900/20 !rounded-lg !px-3">
+                <mat-icon svgIcon="heroicons_outline:arrow-right-on-rectangle" class="!icon-size-4"></mat-icon>
+                <span class="text-sm">Log out</span>
+            </button>
+            <p class="text-[10px] text-gray-600 text-center mt-3">Master ERP &copy; {{ currentYear }}</p>
+        </div>
+    </ng-container>
+</fuse-vertical-navigation>
+
+<!-- ══ Main column (header + scrollable content) ══════════════════════════ -->
+<div class="flex flex-col flex-auto min-w-0 overflow-hidden">
+
+    <!-- ── Sticky top header ──────────────────────────────────────────── -->
+    <header class="flex flex-none items-center h-16 px-4 md:px-6 bg-card border-b shadow-sm z-49 print:hidden"
+            style="border-color: rgba(var(--fuse-border-rgb), 0.12)">
+
+        <!-- Toggle -->
+        <button mat-icon-button (click)="toggleNavigation('mainNavigation')"
+                class="!text-secondary hover:!text-default"
+                matTooltip="Menu">
+            <mat-icon svgIcon="heroicons_outline:bars-3"></mat-icon>
+        </button>
+
+        <div class="flex-auto"></div>
+
+        <!-- ── Right toolbar ────────────────────────────────────────── -->
+        <div class="flex items-center gap-1">
+
+            <!-- Language -->
+            <button mat-icon-button [matMenuTriggerFor]="langMenu"
+                    class="!text-secondary hover:!text-default"
+                    matTooltip="Language">
+                <mat-icon svgIcon="heroicons_outline:globe-alt"></mat-icon>
+            </button>
+            <mat-menu #langMenu="matMenu">
+                @for (lang of languages; track lang.code) {
+                    <button mat-menu-item (click)="setLanguage(lang.code)">
+                        <span class="mr-3 text-base">{{ lang.flag }}</span>
+                        <span class="flex-auto">{{ lang.label }}</span>
+                        @if (activeLanguage === lang.code) {
+                            <mat-icon svgIcon="heroicons_solid:check"
+                                      class="ml-3 !text-primary-500 !icon-size-4"></mat-icon>
+                        }
+                    </button>
+                }
+            </mat-menu>
+
+            <!-- Notifications -->
+            <button mat-icon-button [matMenuTriggerFor]="notifMenu"
+                    class="!text-secondary hover:!text-default"
+                    matTooltip="Notifications">
+                <mat-icon
+                    svgIcon="heroicons_outline:bell"
+                    [matBadge]="notificationCount"
+                    [matBadgeHidden]="notificationCount === 0"
+                    matBadgeColor="warn"
+                    matBadgeSize="small"></mat-icon>
+            </button>
+            <mat-menu #notifMenu="matMenu" panelClass="notif-panel">
+                <div class="flex items-center justify-between px-4 pt-3 pb-2 border-b"
+                     style="border-color: rgba(var(--fuse-border-rgb), 0.12)"
+                     (click)="$event.stopPropagation()">
+                    <p class="text-sm font-semibold text-default">Notifications</p>
+                    @if (notificationCount > 0) {
+                        <span class="text-xs font-medium px-2 py-0.5 rounded-full bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300">
+                            {{ notificationCount }}
+                        </span>
+                    }
+                </div>
+                @if (notifications.length === 0) {
+                    <div class="flex flex-col items-center gap-3 px-6 py-10 text-secondary"
+                         (click)="$event.stopPropagation()">
+                        <mat-icon svgIcon="heroicons_outline:bell-slash" class="opacity-25 !icon-size-10"></mat-icon>
+                        <p class="text-sm font-medium">No notifications</p>
+                        <p class="text-xs text-center opacity-60">You'll be notified here of important events.</p>
+                    </div>
+                }
+                @for (n of notifications; track n.title) {
+                    <button mat-menu-item class="!h-auto !py-3">
+                        <div class="flex items-start gap-3 w-full">
+                            <mat-icon [svgIcon]="n.icon" class="flex-shrink-0 text-secondary !icon-size-5 mt-0.5"></mat-icon>
+                            <div class="flex flex-col min-w-0">
+                                <span class="text-sm font-medium text-default">{{ n.title }}</span>
+                                <span class="text-xs text-secondary mt-0.5">{{ n.time }}</span>
+                            </div>
+                        </div>
+                    </button>
+                }
+            </mat-menu>
+
+            <!-- Settings -->
+            <button mat-icon-button (click)="settingsDrawer.toggle()"
+                    class="!text-secondary hover:!text-default"
+                    matTooltip="Display settings">
+                <mat-icon svgIcon="heroicons_outline:cog-6-tooth"></mat-icon>
+            </button>
+
+            <!-- Separator -->
+            <div class="w-px h-6 bg-gray-200 dark:bg-gray-700 mx-1"></div>
+
+            <!-- User avatar -->
+            <button mat-icon-button [matMenuTriggerFor]="userMenu" class="!p-0 !w-9 !h-9">
+                <div class="flex items-center justify-center w-9 h-9 rounded-full bg-primary-500 text-white text-sm font-bold select-none ring-2 ring-primary-200 dark:ring-primary-800">
+                    {{ user?.name?.charAt(0)?.toUpperCase() ?? 'U' }}
+                </div>
+            </button>
+            <mat-menu #userMenu="matMenu" panelClass="user-panel">
+                <!-- Non-interactive user info -->
+                <div class="px-4 pt-4 pb-3" (click)="$event.stopPropagation()">
+                    <div class="flex items-center gap-3 min-w-60">
+                        <div class="flex items-center justify-center w-10 h-10 rounded-full bg-primary-500 text-white font-bold flex-shrink-0">
+                            {{ user?.name?.charAt(0)?.toUpperCase() ?? 'U' }}
+                        </div>
+                        <div class="min-w-0">
+                            <p class="text-sm font-semibold text-default truncate">{{ user?.name }}</p>
+                            <p class="text-xs text-secondary truncate">{{ user?.email }}</p>
+                            <span class="inline-block mt-1 text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-primary-100 text-primary-700 dark:bg-primary-900/40 dark:text-primary-300">
+                                Master Admin
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="border-t" style="border-color: rgba(var(--fuse-border-rgb), 0.12)"></div>
+                <button mat-menu-item (click)="logout()" class="!text-red-500">
+                    <mat-icon svgIcon="heroicons_outline:arrow-right-on-rectangle" class="!text-red-500"></mat-icon>
+                    <span class="font-medium">Log out</span>
+                </button>
+            </mat-menu>
+
+        </div><!-- /right toolbar -->
+    </header><!-- /header -->
+
+    <!-- ── Scrollable page content ────────────────────────────────────── -->
+    <div class="flex flex-col flex-auto overflow-y-auto bg-default">
+        <div class="flex flex-col flex-auto p-4 md:p-6 lg:p-8 max-w-screen-2xl w-full mx-auto">
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+
+</div><!-- /main column -->
+
+<!-- ══ Settings Drawer (right overlay) ════════════════════════════════════ -->
+<fuse-drawer
+    #settingsDrawer
+    name="settingsDrawer"
+    mode="over"
+    position="right"
+    [fixed]="true">
+
+    <div class="flex flex-col w-full overflow-auto" style="height: 100vh">
+
+        <!-- Drawer header -->
+        <div class="flex items-center justify-between px-6 py-5 border-b flex-none"
+             style="border-color: rgba(var(--fuse-border-rgb), 0.12)">
+            <div>
+                <p class="text-[11px] font-bold uppercase tracking-widest text-secondary">Appearance</p>
+                <h2 class="text-base font-semibold text-default mt-0.5">Display settings</h2>
+            </div>
+            <button mat-icon-button (click)="settingsDrawer.close()" class="!text-secondary hover:!text-default">
+                <mat-icon svgIcon="heroicons_outline:x-mark"></mat-icon>
+            </button>
+        </div>
+
+        <!-- Scheme: Light / Dark / Auto -->
+        <div class="px-6 py-6 border-b flex-none" style="border-color: rgba(var(--fuse-border-rgb), 0.12)">
+            <p class="text-[11px] font-bold uppercase tracking-widest text-secondary mb-4">Color scheme</p>
+            <div class="grid grid-cols-3 gap-2">
+                @for (s of schemes; track s.value) {
+                    <button
+                        class="flex flex-col items-center justify-center gap-2 py-4 rounded-xl border-2 cursor-pointer transition-all focus:outline-none"
+                        [class.border-primary-500]="currentScheme === s.value"
+                        [class.bg-primary-50]="currentScheme === s.value"
+                        [class.dark:bg-primary-900\/10]="currentScheme === s.value"
+                        [class.text-primary-600]="currentScheme === s.value"
+                        [class.dark:text-primary-400]="currentScheme === s.value"
+                        [class.border-gray-200]="currentScheme !== s.value"
+                        [class.dark:border-gray-700]="currentScheme !== s.value"
+                        [class.text-secondary]="currentScheme !== s.value"
+                        (click)="setScheme(s.value)">
+                        <mat-icon [svgIcon]="s.icon" class="!icon-size-6"></mat-icon>
+                        <span class="text-xs font-semibold">{{ s.label }}</span>
+                    </button>
+                }
+            </div>
+        </div>
+
+        <!-- Theme color -->
+        <div class="px-6 py-6 flex-none">
+            <p class="text-[11px] font-bold uppercase tracking-widest text-secondary mb-5">Primary color</p>
+
+            <!-- Swatches -->
+            <div class="grid grid-cols-6 gap-3 mb-5">
+                @for (t of themeColors; track t.id) {
+                    <button
+                        class="relative w-10 h-10 rounded-full cursor-pointer transition-all hover:scale-110 focus:outline-none"
+                        [class.ring-2]="currentTheme === t.id"
+                        [class.ring-offset-2]="currentTheme === t.id"
+                        [class.ring-gray-900]="currentTheme === t.id"
+                        [class.dark:ring-white]="currentTheme === t.id"
+                        [style.background-color]="t.color"
+                        [title]="t.label"
+                        (click)="setTheme(t.id)">
+                        @if (currentTheme === t.id) {
+                            <mat-icon
+                                svgIcon="heroicons_solid:check"
+                                class="!text-white !icon-size-4"
+                                style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)">
+                            </mat-icon>
+                        }
+                    </button>
+                }
+            </div>
+
+            <!-- Label pills -->
+            <div class="flex flex-wrap gap-2">
+                @for (t of themeColors; track t.id) {
+                    <button
+                        class="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border-2 cursor-pointer transition-all font-medium"
+                        [class.border-primary-500]="currentTheme === t.id"
+                        [class.text-primary-600]="currentTheme === t.id"
+                        [class.bg-primary-50]="currentTheme === t.id"
+                        [class.dark:bg-primary-900\/20]="currentTheme === t.id"
+                        [class.dark:text-primary-300]="currentTheme === t.id"
+                        [class.border-gray-200]="currentTheme !== t.id"
+                        [class.dark:border-gray-700]="currentTheme !== t.id"
+                        [class.text-secondary]="currentTheme !== t.id"
+                        (click)="setTheme(t.id)">
+                        <span class="w-2 h-2 rounded-full flex-shrink-0"
+                              [style.background-color]="t.color"></span>
+                        {{ t.label }}
+                    </button>
+                }
+            </div>
+        </div>
+
+    </div>
+</fuse-drawer>

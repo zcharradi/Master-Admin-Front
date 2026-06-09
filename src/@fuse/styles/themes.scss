@@ -1,0 +1,131 @@
+@use "sass:map";
+@use '@angular/material' as mat;
+@use "user-themes" as userThemes;
+
+/* Light base colors */
+$light-base: (
+    foreground: (
+        base: #000000,
+        divider: #E2E8F0,
+        dividers: #E2E8F0,
+        disabled: #94A3B8,
+        disabled-button: #94A3B8,
+        disabled-text: #94A3B8,
+        elevation: #000000,
+        hint-text: #94A3B8,
+        secondary-text: #64748B,
+        icon: #64748B,
+        icons: #64748B,
+        mat-icon: #64748B,
+        text: #1E293B,
+        slider-min: #1E293B,
+        slider-off: #CBD5E1,
+        slider-off-active: #94A3B8,
+    ),
+    background: (
+        status-bar: #CBD5E1,
+        app-bar: #FFFFFF,
+        background: #F1F5F9,
+        hover: rgba(148, 163, 184, 0.12),
+        card: #FFFFFF,
+        dialog: #FFFFFF,
+        disabled-button: rgba(148, 163, 184, 0.38),
+        raised-button: #FFFFFF,
+        focused-button: #64748B,
+        selected-button: #E2E8F0,
+        selected-disabled-button: #E2E8F0,
+        disabled-button-toggle: #CBD5E1,
+        unselected-chip: #E2E8F0,
+        disabled-list-option: #CBD5E1,
+        tooltip: #1E293B,
+    ),
+);
+
+/* Dark base colors */
+$dark-base: (
+    foreground: (
+        base: #FFFFFF,
+        divider: rgba(241, 245, 249, 0.12),
+        dividers: rgba(241, 245, 249, 0.12),
+        disabled: #475569,
+        disabled-button: #1E293B,
+        disabled-text: #475569,
+        elevation: #000000,
+        hint-text: #64748B,
+        secondary-text: #94A3B8,
+        icon: #F1F5F9,
+        icons: #F1F5F9,
+        mat-icon: #94A3B8,
+        text: #FFFFFF,
+        slider-min: #FFFFFF,
+        slider-off: #64748B,
+        slider-off-active: #94A3B8,
+    ),
+    background: (
+        status-bar: #0F172A,
+        app-bar: #0F172A,
+        background: #0F172A,
+        hover: rgba(255, 255, 255, 0.05),
+        card: #1E293B,
+        dialog: #1E293B,
+        disabled-button: rgba(15, 23, 42, 0.38),
+        raised-button: #0F172A,
+        focused-button: #E2E8F0,
+        selected-button: rgba(255, 255, 255, 0.05),
+        selected-disabled-button: #1E293B,
+        disabled-button-toggle: #0F172A,
+        unselected-chip: #475569,
+        disabled-list-option: #E2E8F0,
+        tooltip: #64748B,
+    ),
+);
+
+/* Include the core Angular Material styles */
+@include mat.core();
+
+/* Base theme with density and typography only (no color) */
+@include mat.all-component-themes((
+    color: null,
+    density: 0,
+    typography: mat.m2-define-typography-config(
+        $font-family: '"Inter var", sans-serif',
+    ),
+));
+
+/* Generate per-theme styles */
+@each $name, $theme in userThemes.$user-themes {
+
+    $palettes: ();
+    @each $palette-name in (primary, accent, warn) {
+        $palette: mat.m2-define-palette(map.get($theme, $palette-name));
+        $palette: map.merge($palette, (
+            default: map.get(map.get($theme, $palette-name), DEFAULT),
+            lighter: map.get(map.get($theme, $palette-name), 100),
+            darker: map.get(map.get($theme, $palette-name), 700),
+            text: map.get(map.get($theme, $palette-name), DEFAULT),
+            default-contrast: map.get(map.get(map.get($theme, $palette-name), contrast), DEFAULT),
+            lighter-contrast: map.get(map.get(map.get($theme, $palette-name), contrast), 100),
+            darker-contrast: map.get(map.get(map.get($theme, $palette-name), contrast), 700),
+        ));
+        $palettes: map.merge($palettes, (#{$palette-name}: $palette));
+    }
+
+    $light-theme: mat.m2-define-light-theme((color: $palettes));
+    $dark-theme: mat.m2-define-dark-theme((color: $palettes));
+
+    $light-theme-colors: map.merge(map.get($light-theme, color), $light-base);
+    $light-theme: map.merge((color: $light-theme-colors), $light-theme-colors);
+
+    $dark-theme-colors: map.merge(map.get($dark-theme, color), $dark-base);
+    $dark-theme: map.merge((color: $dark-theme-colors), $dark-theme-colors);
+
+    #{map.get($theme, selector)} .light,
+    #{map.get($theme, selector)}.light {
+        @include mat.all-component-colors($light-theme);
+    }
+
+    #{map.get($theme, selector)} .dark,
+    #{map.get($theme, selector)}.dark {
+        @include mat.all-component-colors($dark-theme);
+    }
+}
