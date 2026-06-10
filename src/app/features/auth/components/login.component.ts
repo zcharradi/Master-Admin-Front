@@ -59,7 +59,6 @@ import { environment } from "@environments/environment";
 
           <div class="flex items-center justify-between text-xs text-theme-muted">
             <span>Backend: {{ environment.apiBaseUrl }}</span>
-            <span class="px-2 py-1 rounded-full bg-white/10" *ngIf="environment.enableMfa">MFA ready</span>
           </div>
 
           <button

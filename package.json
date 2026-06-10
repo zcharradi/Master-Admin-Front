@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "swagger:download": "curl -k -o swagger.json https://localhost:7163/swagger/v1/swagger.json",
+    "swagger:download": "curl -k -o swagger.json https://localhost:8080/swagger/v1/swagger.json",
     "swagger:generate": "npm run swagger:download && openapi-generator generate -g typescript-angular -i swagger.json -o swagger-api -p apiModulePrefix=Master && del swagger.json"
   },
   "prettier": {

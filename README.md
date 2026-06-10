@@ -4,11 +4,11 @@
 1. Installer les deps : `npm install`
 2. Lancer le dev server : `npm start` (http://localhost:4200)
 3. Build prod : `npm run build`
-4. Générer les clients API Swagger : `npm run swagger:generate` (lit la doc https://localhost:7163/swagger/v1/swagger.json)
+4. Générer les clients API Swagger : `npm run swagger:generate` (lit la doc https://localhost:8080/swagger/v1/swagger.json)
 
 ## Environnements
 - Fichier central : `src/environments/environment.ts`
-- URL API par defaut : `https://localhost:7163`
+- URL API par defaut : `https://localhost:8080`
 - Clefs token: `master-erp-token` / `master-erp-refresh`
 - Remplacement prod/dev configure dans `angular.json`
 
@@ -49,4 +49,4 @@
 - Warnings Sass @import (deprecation) visibles au build, sans impact fonctionnel
 
 ## Swagger
-- Pointer le portail vers la doc Swagger/OpenAPI exposee par le backend (`https://localhost:7163/swagger` par defaut)
+- Pointer le portail vers la doc Swagger/OpenAPI exposee par le backend (`https://localhost:8080/swagger` par defaut)
