@@ -154,7 +154,6 @@ export class ShellComponent implements OnInit {
     { label: "ERP Users", path: "/erp-users", description: "ERP accounts" },
     { label: "Master Admins", path: "/master-admins", description: "Portal supervision" },
     { label: "Global Config", path: "/global-config", description: "Security & SMTP" },
-    { label: "Modules", path: "/modules", description: "Catalog & activation" },
     { label: "Industries", path: "/industries", description: "Industries & clients" },
     { label: "References", path: "/references", description: "Countries, currencies, templates" },
   ];

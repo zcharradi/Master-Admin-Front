@@ -17,7 +17,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
         children: [
             {
                 id: 'tenants',
-                title: 'Tenants',
+                title: 'Clients',
                 type: 'basic',
                 icon: 'heroicons_outline:building-office-2',
                 link: '/tenants',
@@ -42,7 +42,27 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 type: 'basic',
                 icon: 'heroicons_outline:shield-check',
                 link: '/master-admins',
-            },
+            },{
+            id: 'global-config',
+            title: 'Global config',
+            type: 'basic',
+            icon: 'heroicons_outline:adjustments-horizontal',
+            link: '/global-config',
+          },
+          {
+            id: 'industries',
+            title: 'Industries',
+            type: 'basic',
+            icon: 'heroicons_outline:building-storefront',
+            link: '/industries',
+          },
+          {
+            id: 'references',
+            title: 'References',
+            type: 'basic',
+            icon: 'heroicons_outline:bookmark',
+            link: '/references',
+          },
         ],
     },
     {
@@ -51,34 +71,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
         type: 'group',
         icon: 'heroicons_outline:wrench-screwdriver',
         children: [
-            {
-                id: 'global-config',
-                title: 'Global config',
-                type: 'basic',
-                icon: 'heroicons_outline:adjustments-horizontal',
-                link: '/global-config',
-            },
-            {
-                id: 'modules',
-                title: 'Modules',
-                type: 'basic',
-                icon: 'heroicons_outline:puzzle-piece',
-                link: '/modules',
-            },
-            {
-                id: 'industries',
-                title: 'Industries',
-                type: 'basic',
-                icon: 'heroicons_outline:building-storefront',
-                link: '/industries',
-            },
-            {
-                id: 'references',
-                title: 'References',
-                type: 'basic',
-                icon: 'heroicons_outline:bookmark',
-                link: '/references',
-            },
+
         ],
     },
 ];

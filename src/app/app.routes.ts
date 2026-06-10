@@ -70,11 +70,6 @@ export const appRoutes: Routes = [
           ),
       },
       {
-        path: 'modules',
-        loadChildren: () =>
-          import('./features/modules/modules.routes').then((m) => m.MODULE_ROUTES),
-      },
-      {
         path: 'industries',
         loadChildren: () =>
           import('./features/industries/industries.routes').then((m) => m.INDUSTRY_ROUTES),
