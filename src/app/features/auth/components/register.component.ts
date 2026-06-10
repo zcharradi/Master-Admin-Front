@@ -1,4 +1,4 @@
-import { HttpErrorResponse } from "@angular/common/http";
+import { HttpClient, HttpErrorResponse, HttpParams } from "@angular/common/http";
 import { CommonModule } from "@angular/common";
 import { Component, inject, OnInit } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
@@ -7,9 +7,9 @@ import { ButtonsModule } from "@progress/kendo-angular-buttons";
 import { InputsModule } from "@progress/kendo-angular-inputs";
 import { finalize } from "rxjs";
 
-import { RegisterResponse } from "@app/core/models/auth.models";
-import { AuthApiService } from "@app/core/services/auth-api.service";
+import { RegisterResponse, RegisterVerificationResponse } from "@app/core/models/auth.models";
 import { UiNotificationService } from "@app/core/services/notification.service";
+import { environment } from "@environments/environment";
 
 @Component({
   selector: "app-register-page",
@@ -80,7 +80,7 @@ import { UiNotificationService } from "@app/core/services/notification.service";
 })
 export class RegisterComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
-  private readonly authApi = inject(AuthApiService);
+  private readonly http = inject(HttpClient);
   private readonly notifications = inject(UiNotificationService);
   private readonly route = inject(ActivatedRoute);
 
@@ -118,8 +118,8 @@ export class RegisterComponent implements OnInit {
 
     const email = this.form.getRawValue().email ?? "";
 
-    this.authApi
-      .requestRegister(email)
+    this.http
+      .post<RegisterResponse>(`${environment.apiBaseUrl}/api/auth/register/request`, { email })
       .pipe(finalize(() => (this.loading = false)))
       .subscribe({
         next: (response) => this.handleRegisterSuccess(response),
@@ -132,8 +132,10 @@ export class RegisterComponent implements OnInit {
     this.statusMessage = null;
     this.errorMessage = null;
 
-    this.authApi
-      .verifyRegisterToken(token)
+    const params = new HttpParams().set("email", token);
+
+    this.http
+      .get<RegisterVerificationResponse>(`${environment.apiBaseUrl}/api/auth/register/verify`, { params })
       .pipe(finalize(() => (this.loading = false)))
       .subscribe({
         next: (response) => {
@@ -158,7 +160,6 @@ export class RegisterComponent implements OnInit {
       this.notifications.warning(response.message);
       return;
     }
-
     this.statusMessage = response.message;
     this.notifications.success(response.message);
   }

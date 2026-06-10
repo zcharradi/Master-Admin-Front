@@ -1,4 +1,12 @@
-﻿import { DashboardMetrics } from "@app/core/services/dashboard-api.service";
+export interface DashboardMetrics {
+  tenantsTotal: number;
+  tenantsNew: number;
+  erpUsers: number;
+  blockedUsers: number;
+  dbInstancesActive: number;
+  dbInstancesInactive: number;
+  alerts: string[];
+}
 
 export interface DashboardState {
   metrics: DashboardMetrics | null;

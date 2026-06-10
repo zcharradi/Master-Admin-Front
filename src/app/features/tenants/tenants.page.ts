@@ -1,4 +1,4 @@
-﻿import { CommonModule } from "@angular/common";
+import { CommonModule } from "@angular/common";
 import { Component, OnInit, inject } from "@angular/core";
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Store } from "@ngrx/store";
@@ -16,8 +16,8 @@ import * as TenantsActions from "./+state/tenants.actions";
 import * as TenantsSelectors from "./+state/tenants.selectors";
 import { GridDataResult, DataStateChangeEvent } from "@progress/kendo-angular-grid";
 import { State, process } from "@progress/kendo-data-query";
-import { DbInstancesApiService } from "@app/core/services/db-instances-api.service";
-import { DbInstance } from "@app/features/db-instances/+state/db-instances.models";
+import { DbInstanceService } from "@swagger/api/dbInstance.service";
+import { DataSourceRequest, DbInstanceDTO } from "@swagger/model/models";
 
 @Component({
   selector: "app-tenants-page",
@@ -143,7 +143,7 @@ import { DbInstance } from "@app/features/db-instances/+state/db-instances.model
 export class TenantsPageComponent implements OnInit {
   private readonly store = inject(Store);
   private readonly fb = inject(FormBuilder);
-  private readonly dbInstancesApi = inject(DbInstancesApiService);
+  private readonly dbApi = inject(DbInstanceService);
 
   protected readonly tenants$ = this.store.select(TenantsSelectors.selectTenants);
   protected readonly loading$ = this.store.select(TenantsSelectors.selectLoading).pipe(map(Boolean));
@@ -155,10 +155,17 @@ export class TenantsPageComponent implements OnInit {
   protected readonly gridView$ = combineLatest([this.tenants$, this.gridState$]).pipe(
     map(([items, state]): GridDataResult => process(items ?? [], state))
   );
-  protected readonly dbInstances$ = this.dbInstancesApi.list({ pageSize: 100 }).pipe(
-    map((resp) => resp.data ?? []),
-    shareReplay(1)
-  );
+  protected readonly dbInstances$ = this.dbApi
+    .dbInstanceGetAllPost({ pageSize: 100 } as DataSourceRequest)
+    .pipe(
+      map((resp: any) =>
+        ((resp?.data ?? []) as DbInstanceDTO[]).map((dto) => ({
+          id: String(dto.id ?? ""),
+          name: dto.serverName ?? dto.dbName ?? "",
+        }))
+      ),
+      shareReplay(1)
+    );
   protected showCreateModal = false;
 
   protected search = "";
@@ -185,7 +192,11 @@ export class TenantsPageComponent implements OnInit {
   }
 
   refresh(): void {
-    this.store.dispatch(TenantsActions.loadTenants({ filters: { search: this.search || undefined, isActive: this.filterStatus ?? undefined } }));
+    this.store.dispatch(
+      TenantsActions.loadTenants({
+        filters: { search: this.search || undefined, isActive: this.filterStatus ?? undefined },
+      })
+    );
   }
 
   onSearch(value: string): void {

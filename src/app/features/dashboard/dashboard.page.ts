@@ -3,7 +3,7 @@ import { Component, OnInit, inject } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { GridModule } from "@progress/kendo-angular-grid";
 
-import { DashboardMetrics } from "@app/core/services/dashboard-api.service";
+import { DashboardMetrics } from "./+state/dashboard.models";
 import * as DashboardActions from "./+state/dashboard.actions";
 import * as DashboardSelectors from "./+state/dashboard.selectors";
 

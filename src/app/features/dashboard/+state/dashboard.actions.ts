@@ -1,5 +1,5 @@
-﻿import { createAction, props } from "@ngrx/store";
-import { DashboardMetrics } from "@app/core/services/dashboard-api.service";
+import { createAction, props } from "@ngrx/store";
+import { DashboardMetrics } from "./dashboard.models";
 
 export const loadDashboard = createAction("[Dashboard] Load");
 export const loadDashboardSuccess = createAction("[Dashboard] Load Success", props<{ metrics: DashboardMetrics }>());
