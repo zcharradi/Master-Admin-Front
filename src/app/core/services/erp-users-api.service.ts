@@ -4,7 +4,7 @@ import { map, Observable } from "rxjs";
 import { ErpUser } from "@app/features/erp-users/+state/erp-users.models";
 import { ApiListResponse } from "@app/shared/models/pagination.model";
 import { ErpUserService } from "@swagger/api/erpUser.service";
-import { DataSourceRequest, DataSourceResult, ErpUserDTO, OperationResult } from "@swagger/model/models";
+import { DataSourceRequest, ErpUserDTO } from "@swagger/model/models";
 
 @Injectable({ providedIn: "root" })
 export class ErpUsersApiService {
@@ -18,8 +18,8 @@ export class ErpUsersApiService {
       sorts: params?.sorts ?? null,
     };
 
-    return this.api.erpUserGetUsers(request).pipe(
-      map((result: DataSourceResult) => {
+    return this.api.erpUserGetAllPost(request).pipe(
+      map((result: any) => {
         const data = (result?.data as ErpUserDTO[]) ?? [];
         return {
           data: data.map((dto) => this.mapUser(dto)),
@@ -38,10 +38,10 @@ export class ErpUsersApiService {
       isBlocked: payload.isBlocked,
       resetPasswordIsNeeded: payload.resetPasswordIsNeeded,
     };
-    return this.api.erpUserEdit(dto).pipe(map((res) => this.pickUserFromOperation(res, dto)));
+    return this.api.erpUserEditPost(dto).pipe(map((res) => this.pickUserFromOperation(res, dto)));
   }
 
-  private pickUserFromOperation(res: OperationResult, fallback: ErpUserDTO): ErpUser {
+  private pickUserFromOperation(res: any, fallback: ErpUserDTO): ErpUser {
     const dto = (res?.data as ErpUserDTO) ?? fallback;
     return this.mapUser(dto);
   }

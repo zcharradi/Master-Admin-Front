@@ -4,7 +4,7 @@ import { map, Observable, of } from "rxjs";
 import { Tenant } from "@app/features/tenants/+state/tenants.models";
 import { ApiListResponse } from "@app/shared/models/pagination.model";
 import { ErpTenantService } from "@swagger/api/erpTenant.service";
-import { DataSourceRequest, DataSourceResult, ErpTenantDTO, OperationResult } from "@swagger/model/models";
+import { DataSourceRequest, ErpTenantDTO } from "@swagger/model/models";
 
 @Injectable({ providedIn: "root" })
 export class TenantsApiService {
@@ -19,8 +19,8 @@ export class TenantsApiService {
       sorts: Array.isArray(p.sorts) ? p.sorts : null,
     };
 
-    return this.api.erpTenantGetAllTenants(request).pipe(
-      map((result: DataSourceResult) => {
+    return this.api.erpTenantGetAllPost(request).pipe(
+      map((result: any) => {
         const data = (result?.data as ErpTenantDTO[]) ?? [];
         return {
           data: data.map((dto) => this.mapTenant(dto)),
@@ -36,7 +36,7 @@ export class TenantsApiService {
       tenantId: payload.uuid,
       dbInstanceId: payload.dbInstanceId ? Number(payload.dbInstanceId) : undefined,
     };
-    return this.api.erpTenantCreate(dto).pipe(map((res) => this.pickTenantFromOperation(res, dto)));
+    return this.api.erpTenantCreatePost(dto).pipe(map((res) => this.pickTenantFromOperation(res, dto)));
   }
 
   update(id: string, payload: Partial<Tenant>): Observable<Tenant> {
@@ -46,14 +46,14 @@ export class TenantsApiService {
       entityName: payload.entityName,
       dbInstanceId: payload.dbInstanceId ? Number(payload.dbInstanceId) : undefined,
     };
-    return this.api.erpTenantEdit(dto).pipe(map((res) => this.pickTenantFromOperation(res, dto)));
+    return this.api.erpTenantEditPost(dto).pipe(map((res) => this.pickTenantFromOperation(res, dto)));
   }
 
   remove(id: string): Observable<void> {
-    return this.api.erpTenantDelete(Number(id)).pipe(map(() => void 0));
+    return this.api.erpTenantDeleteIdPost(Number(id)).pipe(map(() => void 0));
   }
 
-  private pickTenantFromOperation(res: OperationResult, fallback: ErpTenantDTO): Tenant {
+  private pickTenantFromOperation(res: any, fallback: ErpTenantDTO): Tenant {
     const dto = (res?.data as ErpTenantDTO) ?? fallback;
     return this.mapTenant(dto);
   }

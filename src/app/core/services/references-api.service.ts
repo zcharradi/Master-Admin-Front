@@ -5,7 +5,7 @@ import { ReferenceData, MailTemplate } from "@app/features/references/+state/ref
 import { CurrencyService } from "@swagger/api/currency.service";
 import { ERPCountryService } from "@swagger/api/eRPCountry.service";
 import { MasterErpmailTemplateService } from "@swagger/api/masterErpmailTemplate.service";
-import { DataSourceRequest, DataSourceResult, MasterErpmailTemplateDTO } from "@swagger/model/models";
+import { DataSourceRequest, MasterErpmailTemplateDTO } from "@swagger/model/models";
 
 @Injectable({ providedIn: "root" })
 export class ReferencesApiService {
@@ -18,9 +18,9 @@ export class ReferencesApiService {
   load(): Observable<ReferenceData> {
     const request: DataSourceRequest = { page: 1, pageSize: 200 };
 
-    const countries$ = this.countryApi.eRPCountryGetCountries(request);
-    const currencies$ = this.currencyApi.currencyRead(request);
-    const templates$ = this.mailTemplateApi.masterErpmailTemplateRead(request);
+    const countries$ = this.countryApi.eRPCountryGetAllPost(request);
+    const currencies$ = this.currencyApi.currencyGetCurrencyPost(request);
+    const templates$ = this.mailTemplateApi.masterErpmailTemplateReadPost(request);
 
     return forkJoin([countries$, currencies$, templates$]).pipe(
       map(([countriesRes, currenciesRes, templatesRes]) => ({
@@ -31,17 +31,17 @@ export class ReferencesApiService {
     );
   }
 
-  private mapCountries(result: DataSourceResult): string[] {
+  private mapCountries(result: any): string[] {
     const items = (result?.data as any[]) ?? [];
     return items.map((c) => c.countryName ?? c.country_code ?? c.countryCode).filter(Boolean);
   }
 
-  private mapCurrencies(result: DataSourceResult): string[] {
+  private mapCurrencies(result: any): string[] {
     const items = (result?.data as any[]) ?? [];
     return items.map((c) => c.code ?? c.label ?? c.currencyCode).filter(Boolean);
   }
 
-  private mapMailTemplates(result: DataSourceResult): MailTemplate[] {
+  private mapMailTemplates(result: any): MailTemplate[] {
     const items = (result?.data as MasterErpmailTemplateDTO[]) ?? [];
     return items.map((t) => ({
       id: String((t as any).id ?? crypto.randomUUID()),

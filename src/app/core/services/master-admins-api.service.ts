@@ -12,7 +12,7 @@ export class MasterAdminsApiService {
 
   list(): Observable<ApiListResponse<MasterAdmin>> {
     // Swagger only exposes "current" and "by id" endpoints.
-    return this.api.masterAdminUsersGetCurrent().pipe(
+    return this.api.usersCurrentGet().pipe(
       map((dto) => ({
         data: [this.mapAdmin(dto)],
         total: 1,

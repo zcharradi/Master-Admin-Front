@@ -4,7 +4,7 @@ import { map, Observable } from "rxjs";
 import { DbInstance } from "@app/features/db-instances/+state/db-instances.models";
 import { ApiListResponse } from "@app/shared/models/pagination.model";
 import { DbInstanceService } from "@swagger/api/dbInstance.service";
-import { DataSourceRequest, DataSourceResult, DbInstanceDTO, OperationResult } from "@swagger/model/models";
+import { DataSourceRequest, DbInstanceDTO } from "@swagger/model/models";
 
 @Injectable({ providedIn: "root" })
 export class DbInstancesApiService {
@@ -18,8 +18,8 @@ export class DbInstancesApiService {
       sorts: params?.sorts ?? null,
     };
 
-    return this.api.dbInstanceGetDbInstances(request).pipe(
-      map((result: DataSourceResult) => {
+    return this.api.dbInstanceGetAllPost(request).pipe(
+      map((result: any) => {
         const data = (result?.data as DbInstanceDTO[]) ?? [];
         return {
           data: data.map((dto) => this.mapInstance(dto)),
@@ -37,7 +37,7 @@ export class DbInstancesApiService {
       dbName: payload.dbName,
       isActive: payload.isActive,
     };
-    return this.api.dbInstanceEdit(dto).pipe(map((res) => this.pickInstanceFromOperation(res, dto)));
+    return this.api.dbInstanceEditPost(dto).pipe(map((res) => this.pickInstanceFromOperation(res, dto)));
   }
 
   updateCredentials(
@@ -50,10 +50,10 @@ export class DbInstancesApiService {
       password: payload.password,
       readOnlyPassword: payload.readOnlyPassword,
     };
-    return this.api.dbInstanceEdit(dto).pipe(map(() => void 0));
+    return this.api.dbInstanceEditPost(dto).pipe(map(() => void 0));
   }
 
-  private pickInstanceFromOperation(res: OperationResult, fallback: DbInstanceDTO): DbInstance {
+  private pickInstanceFromOperation(res: any, fallback: DbInstanceDTO): DbInstance {
     const dto = (res?.data as DbInstanceDTO) ?? fallback;
     return this.mapInstance(dto);
   }

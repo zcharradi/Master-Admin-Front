@@ -10,21 +10,21 @@ export class GlobalConfigApiService {
   constructor(private readonly api: MasterErpglobalConfigService) {}
 
   getAll(): Observable<GlobalConfig[]> {
-    return this.api.masterErpglobalConfigRead().pipe(
-      map((result) =>
-        ((result.data ?? []) as MasterErpglobalConfigDTO[]).map((dto) => this.fromDto(dto))
+    return this.api.masterErpglobalConfigsReadPost().pipe(
+      map((result: any) =>
+        ((result?.data ?? []) as MasterErpglobalConfigDTO[]).map((dto) => this.fromDto(dto))
       )
     );
   }
 
   getById(id: number): Observable<GlobalConfig> {
-    return this.api.masterErpglobalConfigGetByID(id).pipe(map((dto) => this.fromDto(dto)));
+    return this.api.masterErpglobalConfigsGlobalConfigIdGet(id).pipe(map((dto) => this.fromDto(dto as any)));
   }
 
   update(id: number, payload: Partial<GlobalConfig>): Observable<GlobalConfig> {
-    return this.api.masterErpglobalConfigGetByID(id).pipe(
-      switchMap((current) => this.api.masterErpglobalConfigEdit(id, this.toDto(current, payload))),
-      map((updated) => this.fromDto(updated))
+    return this.api.masterErpglobalConfigsGlobalConfigIdGet(id).pipe(
+      switchMap((current) => this.api.masterErpglobalConfigsGlobalConfigIdPut(id, this.toDto(current as any, payload))),
+      map((updated) => this.fromDto(updated as any))
     );
   }
 
@@ -32,7 +32,7 @@ export class GlobalConfigApiService {
     return this.update(id, payload).pipe(map(() => void 0));
   }
 
-  private fromDto(dto: MasterErpglobalConfigDTO): GlobalConfig {
+  private fromDto(dto: any): GlobalConfig {
     return {
       id: dto.id,
       environmentName: dto.environmentName ?? undefined,
@@ -71,15 +71,13 @@ export class GlobalConfigApiService {
     };
   }
 
-  private toDto(current: MasterErpglobalConfigDTO, p: Partial<GlobalConfig>): MasterErpglobalConfigDTO {
+  private toDto(current: any, p: Partial<GlobalConfig>): MasterErpglobalConfigDTO {
     return {
       ...current,
       environmentName: p.environmentName ?? current.environmentName,
       temporaryPhysicalPath: p.temporaryPhysicalPath ?? current.temporaryPhysicalPath,
       virtualDirectoryName: p.virtualDirectoryName ?? current.virtualDirectoryName,
       zipLibraryPath: p.zipLibraryPath ?? current.zipLibraryPath,
-      executionDnsDomain: p.executionDnsDomain ?? current.executionDnsDomain,
-      signatureFile: p.signatureFile ?? current.signatureFile,
       requirePasswordComplexity: p.requirePasswordComplexity ?? current.requirePasswordComplexity,
       minPasswordLength: p.minPasswordLength ?? current.minPasswordLength,
       requireUpperCase: p.requireUpperCase ?? current.requireUpperCase,
@@ -96,11 +94,8 @@ export class GlobalConfigApiService {
       m2fnumberOfTries: p.m2fnumberOfTries ?? current.m2fnumberOfTries,
       numberOfRegenerateCode: p.numberOfRegenerateCode ?? current.numberOfRegenerateCode,
       accessTokenExpiration: p.accessTokenExpiration ?? current.accessTokenExpiration,
-      refreshTokenExpiration: p.refreshTokenExpiration ?? current.refreshTokenExpiration,
       hasCaptcha: p.hasCaptcha ?? current.hasCaptcha,
       showCaptchaLoginAfterX: p.showCaptchaLoginAfterX ?? current.showCaptchaLoginAfterX,
-      hasBlockAccount: p.hasBlockAccount ?? current.hasBlockAccount,
-      blockAccountAfterX: p.blockAccountAfterX ?? current.blockAccountAfterX,
       globalSmtpAccount: p.globalSmtpAccount ?? current.globalSmtpAccount,
       globalSmtpUser: p.globalSmtpUser ?? current.globalSmtpUser,
       globalSmtpPort: p.globalSmtpPort ?? current.globalSmtpPort,

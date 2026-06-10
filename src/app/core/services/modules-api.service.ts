@@ -4,7 +4,7 @@ import { map, Observable } from "rxjs";
 import { ModuleCatalog } from "@app/features/modules/+state/modules.models";
 import { ApiListResponse } from "@app/shared/models/pagination.model";
 import { MasterErpmodulesService } from "@swagger/api/masterErpmodules.service";
-import { DataSourceRequest, DataSourceResult, MasterErpmodulesDTO, OperationResult } from "@swagger/model/models";
+import { DataSourceRequest, MasterErpmodulesDTO } from "@swagger/model/models";
 
 @Injectable({ providedIn: "root" })
 export class ModulesApiService {
@@ -12,8 +12,8 @@ export class ModulesApiService {
 
   list(): Observable<ApiListResponse<ModuleCatalog>> {
     const request: DataSourceRequest = { page: 1, pageSize: 100 };
-    return this.api.masterErpmodulesGetMasterErpmoduless(request).pipe(
-      map((result: DataSourceResult) => {
+    return this.api.masterErpmodulesGetAllPost(request).pipe(
+      map((result: any) => {
         const data = (result?.data as MasterErpmodulesDTO[]) ?? [];
         return {
           data: data.map((dto) => this.mapModule(dto)),
@@ -29,10 +29,10 @@ export class ModulesApiService {
       moduleName: payload.name,
       dbprefix: payload.code,
     };
-    return this.api.masterErpmodulesEdit(dto).pipe(map((res) => this.pickModule(res, dto)));
+    return this.api.masterErpmodulesEditPost(dto).pipe(map((res) => this.pickModule(res, dto)));
   }
 
-  private pickModule(res: OperationResult, fallback: MasterErpmodulesDTO): ModuleCatalog {
+  private pickModule(res: any, fallback: MasterErpmodulesDTO): ModuleCatalog {
     const dto = (res?.data as MasterErpmodulesDTO) ?? fallback;
     return this.mapModule(dto);
   }

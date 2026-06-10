@@ -4,7 +4,7 @@ import { map, Observable } from "rxjs";
 import { Industry } from "@app/features/industries/+state/industries.models";
 import { ApiListResponse } from "@app/shared/models/pagination.model";
 import { MasterERPIndustriesService } from "@swagger/api/masterERPIndustries.service";
-import { DataSourceRequest, DataSourceResult, MasterERPIndustriesDTO, OperationResult } from "@swagger/model/models";
+import { DataSourceRequest, MasterERPIndustriesDTO } from "@swagger/model/models";
 
 @Injectable({ providedIn: "root" })
 export class IndustriesApiService {
@@ -12,8 +12,8 @@ export class IndustriesApiService {
 
   list(): Observable<ApiListResponse<Industry>> {
     const request: DataSourceRequest = { page: 1, pageSize: 100 };
-    return this.api.masterERPIndustriesGetAllMasterERPIndustries(request).pipe(
-      map((result: DataSourceResult) => {
+    return this.api.masterERPIndustriesGetAllPost(request).pipe(
+      map((result: any) => {
         const data = (result?.data as MasterERPIndustriesDTO[]) ?? [];
         return {
           data: data.map((dto) => this.mapIndustry(dto)),
@@ -29,10 +29,10 @@ export class IndustriesApiService {
       codeIndustry: payload.code,
       labelIndustry: payload.label,
     };
-    return this.api.masterERPIndustriesEdit(dto).pipe(map((res) => this.pickIndustry(res, dto)));
+    return this.api.masterERPIndustriesEditPost(dto).pipe(map((res) => this.pickIndustry(res, dto)));
   }
 
-  private pickIndustry(res: OperationResult, fallback: MasterERPIndustriesDTO): Industry {
+  private pickIndustry(res: any, fallback: MasterERPIndustriesDTO): Industry {
     const dto = (res?.data as MasterERPIndustriesDTO) ?? fallback;
     return this.mapIndustry(dto);
   }

@@ -14,7 +14,7 @@ import { environment } from "@environments/environment";
 import { TokenService } from "@app/core/services/token.service";
 import { AuthService } from "@swagger/api/auth.service";
 import { MasterAdminUsersService } from "@swagger/api/masterAdminUsers.service";
-import { LoginAdminDTO, MasterAdminUsersDTO, RefreshTokenDTO } from "@swagger/model/models";
+import { LoginAdminDTO, MasterAdminUsersDTO } from "@swagger/model/models";
 
 type LoginAdminResponse = { token?: any } | any;
 
@@ -29,7 +29,7 @@ export class AuthApiService {
 
   login(payload: LoginRequest): Observable<TokenResponse> {
     const request: LoginAdminDTO = { email: payload.email, password: payload.password };
-    return this.authApi.authLoginAdmin(request).pipe(map((response) => this.mapToken(response)));
+    return this.authApi.loginAdminPost(request).pipe(map((response) => this.mapToken(response)));
   }
 
   verifyMfa(_payload: MfaVerifyRequest): Observable<TokenResponse> {
@@ -37,21 +37,15 @@ export class AuthApiService {
   }
 
   me(): Observable<AuthProfile> {
-    return this.masterAdminApi.masterAdminUsersGetCurrent().pipe(map((dto) => this.mapProfile(dto)));
+    return this.masterAdminApi.usersCurrentGet().pipe(map((dto) => this.mapProfile(dto)));
   }
 
-  refresh(refreshToken: string): Observable<TokenResponse> {
-    const body: RefreshTokenDTO = {
-      token: {
-        Refresh_token: refreshToken,
-        CryptedCs: this.tokens.getCryptedCs() || undefined,
-      },
-    };
-    return this.authApi.authRefreshToken(body).pipe(map((response) => this.mapToken(response)));
+  refresh(_refreshToken: string): Observable<TokenResponse> {
+    return this.authApi.authRefreshTokenPost().pipe(map((response) => this.mapToken(response)));
   }
 
   logout(): Observable<void> {
-    return this.authApi.authSignOut().pipe(map(() => void 0));
+    return this.authApi.authSignOutPost().pipe(map(() => void 0));
   }
 
   requestRegister(email: string): Observable<RegisterResponse> {
