@@ -1,0 +1,44 @@
+<div class="space-y-4">
+  <app-page-header
+    title="ERP Users"
+    subtitle="Application-side ERP accounts"
+    badge="Users"
+    [actions]="actions"
+  />
+
+  <div class="rounded-2xl card-surface p-4 shadow-card">
+    <kendo-grid [data]="users$ | async" [loading]="(loading$ | async) ?? false" [height]="420">
+      <kendo-grid-column field="email" title="Email" [width]="220"></kendo-grid-column>
+      <kendo-grid-column field="fullName" title="Name" [width]="180"></kendo-grid-column>
+      <kendo-grid-column field="isActive" title="Active" [width]="100">
+        <ng-template kendoGridCellTemplate let-user>
+          <span class="px-2 py-1 rounded-full text-xs" [class.bg-emerald-500/20]="user.isActive" [class.text-success]="user.isActive" [class.bg-rose-500/20]="!user.isActive" [class.text-rose-200]="!user.isActive">
+            {{ user.isActive ? 'Active' : 'Inactive' }}
+          </span>
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="isBlocked" title="Block status" [width]="110">
+        <ng-template kendoGridCellTemplate let-user>
+          <span class="px-2 py-1 rounded-full text-xs" [class.bg-amber-500/20]="user.isBlocked" [class.text-amber-100]="user.isBlocked" [class.bg-emerald-500/20]="!user.isBlocked" [class.text-success]="!user.isBlocked">
+            {{ user.isBlocked ? 'Blocked' : 'OK' }}
+          </span>
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="resetPasswordIsNeeded" title="Reset" [width]="100">
+        <ng-template kendoGridCellTemplate let-user>
+          <span class="text-xs text-theme-primary">{{ user.resetPasswordIsNeeded ? 'Required' : 'No' }}</span>
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column title="Actions" [width]="200">
+        <ng-template kendoGridCellTemplate let-user>
+          <button kendoButton look="flat" size="small" (click)="toggleActive(user)">
+            {{ user.isActive ? 'Disable' : 'Enable' }}
+          </button>
+          <button kendoButton look="outline" size="small" (click)="toggleBlocked(user)">
+            {{ user.isBlocked ? 'Unblock' : 'Block' }}
+          </button>
+        </ng-template>
+      </kendo-grid-column>
+    </kendo-grid>
+  </div>
+</div>

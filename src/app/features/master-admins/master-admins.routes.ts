@@ -1,9 +1,9 @@
-﻿import { provideEffects } from "@ngrx/effects";
+import { provideEffects } from "@ngrx/effects";
 import { provideState } from "@ngrx/store";
 import { Routes } from "@angular/router";
 
-import { MasterAdminsEffects } from "./+state/master-admins.effects";
-import { masterAdminsFeature } from "./+state/master-admins.reducer";
+import { MasterAdminsEffects } from "./effects";
+import { masterAdminsFeature } from "./reducers";
 import { MasterAdminsPageComponent } from "./master-admins.page";
 
 export const MASTER_ADMIN_ROUTES: Routes = [

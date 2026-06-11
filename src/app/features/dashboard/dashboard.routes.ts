@@ -1,9 +1,9 @@
-﻿import { provideEffects } from "@ngrx/effects";
+import { provideEffects } from "@ngrx/effects";
 import { provideState } from "@ngrx/store";
 import { Routes } from "@angular/router";
 
-import { DashboardEffects } from "./+state/dashboard.effects";
-import { dashboardFeature } from "./+state/dashboard.reducer";
+import { DashboardEffects } from "./effects";
+import { dashboardFeature } from "./reducers";
 import { DashboardPageComponent } from "./dashboard.page";
 
 export const DASHBOARD_ROUTES: Routes = [

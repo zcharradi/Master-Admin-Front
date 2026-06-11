@@ -7,74 +7,13 @@ import { InputsModule } from "@progress/kendo-angular-inputs";
 import { Observable, Subscription } from "rxjs";
 
 import { AuthFacade } from "@app/features/auth/+state/auth.facade";
-import { environment } from "@environments/environment";
 
 @Component({
   selector: "app-login-page",
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, ButtonsModule, InputsModule],
-  template: `
-    <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-[var(--bg-secondary)] via-[var(--bg-primary)] to-[var(--bg-secondary)] p-6">
-      <div class="w-full max-w-xl rounded-3xl card-surface p-8 shadow-card">
-        <p class="text-xs uppercase tracking-[0.4em] text-lagoon mb-3">Master Admin</p>
-        <h1 class="text-2xl font-semibold text-theme-primary mb-1">Secure sign-in</h1>
-        <p class="text-sm text-theme-muted mb-6">Bearer token + MFA based on configuration.</p>
-
-        <div *ngIf="accountBlocked$ | async" class="mb-4 p-3 rounded-lg bg-rose-100 border border-rose-300 text-rose-700 text-sm">
-          Account blocked. Contact an administrator.
-        </div>
-
-        <form class="space-y-4" [formGroup]="form" (ngSubmit)="onSubmit()">
-          <label class="block text-sm font-medium text-theme-primary">
-            Email
-            <input kendoTextBox formControlName="email" placeholder="admin@master.io" class="mt-1 w-full" />
-          </label>
-
-          <label class="block text-sm font-medium text-theme-primary">
-            Password
-            <input
-              kendoTextBox
-              [type]="showPassword ? 'text' : 'password'"
-              formControlName="password"
-              placeholder="••••••••"
-              class="mt-1 w-full"
-            />
-          </label>
-
-          <div class="flex items-center gap-2">
-            <input type="checkbox" id="showPwd" (change)="showPassword = !showPassword" />
-            <label for="showPwd" class="text-xs text-theme-muted cursor-pointer">Show password</label>
-          </div>
-
-          <label class="block text-sm font-medium text-theme-primary" *ngIf="captchaRequired$ | async">
-            Code Captcha
-            <input
-              kendoTextBox
-              formControlName="captcha"
-              placeholder="Enter captcha code"
-              class="mt-1 w-full"
-            />
-            <span class="text-xs text-amber-600 mt-1 block">Too many attempts — captcha required.</span>
-          </label>
-
-          <div class="flex items-center justify-between text-xs text-theme-muted">
-            <span>Backend: {{ environment.apiBaseUrl }}</span>
-          </div>
-
-          <button
-            kendoButton
-            type="submit"
-            [primary]="true"
-            [disabled]="form.invalid || (!!(loading$ | async)) || (!!(accountBlocked$ | async))"
-            class="w-full"
-          >
-            {{ (loading$ | async) ? "Signing in..." : "Sign in" }}
-          </button>
-          <p class="text-sm text-rose-500" *ngIf="(error$ | async) as error">{{ error }}</p>
-        </form>
-      </div>
-    </div>
-  `,
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit, OnDestroy {
   private readonly authFacade = inject(AuthFacade);
@@ -82,13 +21,27 @@ export class LoginComponent implements OnInit, OnDestroy {
   private readonly fb = inject(FormBuilder);
   private captchaSub?: Subscription;
 
-  protected readonly environment = environment;
   protected readonly loading$: Observable<boolean> = this.authFacade.loading$;
   protected readonly error$ = this.authFacade.error$;
   protected readonly captchaRequired$ = this.authFacade.captchaRequired$;
   protected readonly accountBlocked$ = this.authFacade.accountBlocked$;
 
   protected showPassword = false;
+
+  protected readonly features = [
+    {
+      label: "Authentification sécurisée par token Bearer",
+      icon: "M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z",
+    },
+    {
+      label: "Authentification multi-facteurs (MFA)",
+      icon: "M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 8.25h3m-3 3h3m-3 3H9m1.5-12H9",
+    },
+    {
+      label: "Contrôle d'accès basé sur les rôles",
+      icon: "M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z",
+    },
+  ];
 
   protected form = this.fb.group({
     email: ["", [Validators.required]],

@@ -15,68 +15,8 @@ import { environment } from "@environments/environment";
   selector: "app-register-page",
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, ButtonsModule, InputsModule],
-  template: `
-    <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-[var(--bg-secondary)] via-[var(--bg-primary)] to-[var(--bg-secondary)] p-6">
-      <div class="w-full max-w-xl rounded-3xl card-surface p-8 shadow-card">
-        <p class="text-xs uppercase tracking-[0.4em] text-lagoon mb-3">Master Admin</p>
-        <h1 class="text-2xl font-semibold text-theme-primary mb-1">
-          {{ confirmationMode ? "Registration confirmation" : "Create access" }}
-        </h1>
-        <p class="text-sm text-theme-muted mb-6">
-          {{
-            confirmationMode
-              ? "Validating the link received by email."
-              : "Enter your email to receive the creation link."
-          }}
-        </p>
-
-        <form class="space-y-4" [formGroup]="form" (ngSubmit)="onSubmit()">
-          <label class="block text-sm font-medium text-theme-primary">
-            Email
-            <input
-              kendoTextBox
-              formControlName="email"
-              type="email"
-              placeholder="admin@master.io"
-              class="mt-1 w-full"
-              [readonly]="confirmationMode && !!verifiedEmail"
-            />
-          </label>
-          <p class="text-xs text-rose-500" *ngIf="form.controls.email.invalid && form.controls.email.touched">
-            A valid email address is required.
-          </p>
-
-          <button
-            kendoButton
-            type="submit"
-            [primary]="true"
-            [disabled]="form.invalid || loading"
-            class="w-full"
-          >
-            {{
-              loading
-                ? (confirmationMode ? "Verifying..." : "Sending...")
-                : (confirmationMode ? "Resend link" : "Send link")
-            }}
-          </button>
-        </form>
-
-        <div
-          *ngIf="statusMessage"
-          class="mt-4 text-sm bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-xl p-3"
-        >
-          {{ statusMessage }} <span *ngIf="verifiedEmail">({{ verifiedEmail }})</span>
-        </div>
-
-        <div
-          *ngIf="errorMessage"
-          class="mt-3 text-sm bg-rose-50 text-rose-600 border border-rose-200 rounded-xl p-3"
-        >
-          {{ errorMessage }}
-        </div>
-      </div>
-    </div>
-  `,
+  templateUrl: './register.component.html',
+  styleUrls: ['./register.component.scss'],
 })
 export class RegisterComponent implements OnInit {
   private readonly fb = inject(FormBuilder);

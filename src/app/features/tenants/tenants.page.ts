@@ -12,8 +12,8 @@ import { DialogsModule } from "@progress/kendo-angular-dialog";
 import { PageHeaderAction, PageHeaderComponent } from "@app/shared/components/page-header.component";
 import { SdsKendoGridComponent } from "@app/shared/components/sds-kendo-grid.component";
 import { BehaviorSubject, combineLatest, map, shareReplay } from "rxjs";
-import * as TenantsActions from "./+state/tenants.actions";
-import * as TenantsSelectors from "./+state/tenants.selectors";
+import * as TenantsActions from "./actions";
+import * as TenantsSelectors from "./reducers";
 import { GridDataResult, DataStateChangeEvent } from "@progress/kendo-angular-grid";
 import { State, process } from "@progress/kendo-data-query";
 import { DbInstanceService } from "@swagger/api/dbInstance.service";
@@ -35,110 +35,8 @@ import { DataSourceRequest, DbInstanceDTO } from "@swagger/model/models";
     SdsKendoGridComponent,
     DialogsModule,
   ],
-  template: `
-    <div class="space-y-4">
-      <app-page-header
-        title="Tenants"
-        subtitle="Multi-tenant management and DB assignment"
-        badge="Directory"
-        [actions]="actions"
-      />
-
-      <div class="grid gap-4 md:grid-cols-3">
-        <label class="text-sm text-theme-primary">
-          Search
-          <input
-            kendoTextBox
-            class="mt-1 w-full"
-            [ngModel]="search"
-            (ngModelChange)="onSearch($event)"
-            placeholder="Name or UUID"
-          />
-        </label>
-        <label class="text-sm text-theme-primary">
-          Status
-          <kendo-dropdownlist
-            class="mt-1 w-full"
-            [data]="statusOptions"
-            textField="label"
-            valueField="value"
-            [value]="filterStatus"
-            (valueChange)="onStatusChange($event)"
-          ></kendo-dropdownlist>
-        </label>
-        <label class="text-sm text-theme-primary">
-          DB assignment
-          <input kendoTextBox class="mt-1 w-full" placeholder="db_instance_id" disabled />
-        </label>
-      </div>
-
-      <div class="card-surface shadow-card rounded-2xl p-0 overflow-hidden" *ngIf="gridView$ | async as grid">
-        <sds-kendo-grid
-          [data]="grid"
-          [state]="gridState"
-          [loading]="(loading$ | async) ?? false"
-          [height]="420"
-          (stateChange)="onGridStateChange($event)"
-          (refresh)="refresh()"
-        >
-          <kendo-grid-column field="uuid" title="UUID" [width]="160"></kendo-grid-column>
-          <kendo-grid-column field="entityName" title="Entity" [width]="200"></kendo-grid-column>
-          <kendo-grid-column field="dbInstanceId" title="DB Instance" [width]="140"></kendo-grid-column>
-          <kendo-grid-column field="isActive" title="Active" [width]="90">
-            <ng-template kendoGridCellTemplate let-dataItem>
-              <span
-                class="px-2 py-1 rounded-full text-xs"
-                [class.bg-emerald-500/20]="dataItem.isActive"
-                [class.text-success]="dataItem.isActive"
-                [class.bg-rose-500/20]="!dataItem.isActive"
-                [class.text-rose-200]="!dataItem.isActive"
-              >
-                {{ dataItem.isActive ? 'Active' : 'Inactive' }}
-              </span>
-            </ng-template>
-          </kendo-grid-column>
-          <kendo-grid-column title="Actions" [width]="150">
-            <ng-template kendoGridCellTemplate let-dataItem>
-              <button kendoButton look="flat" size="small" (click)="select(dataItem.id)">Details</button>
-              <button kendoButton look="outline" size="small" (click)="disable(dataItem.id)" [disabled]="!dataItem.isActive">Disable</button>
-            </ng-template>
-          </kendo-grid-column>
-        </sds-kendo-grid>
-      </div>
-
-      <kendo-dialog *ngIf="showCreateModal" (close)="closeModal()">
-        <kendo-dialog-titlebar>
-          New tenant
-        </kendo-dialog-titlebar>
-        <form class="space-y-4" [formGroup]="createForm" (ngSubmit)="create()">
-          <label class="block text-sm text-theme-primary">
-            UUID
-            <input kendoTextBox formControlName="uuid" class="mt-1 w-full" placeholder="auto or manual" />
-          </label>
-          <label class="block text-sm text-theme-primary">
-            Entity name
-            <input kendoTextBox formControlName="entityName" class="mt-1 w-full" placeholder="Company" />
-          </label>
-          <label class="block text-sm text-theme-primary">
-            DB Instance
-            <kendo-dropdownlist
-              class="mt-1 w-full"
-              [data]="dbInstances$ | async"
-              textField="name"
-              valueField="id"
-              [valuePrimitive]="true"
-              formControlName="dbInstanceId"
-              [defaultItem]="{ name: 'Select an instance', id: '' }"
-            ></kendo-dropdownlist>
-          </label>
-        </form>
-        <kendo-dialog-actions>
-          <button kendoButton look="flat" (click)="closeModal()">Cancel</button>
-          <button kendoButton [primary]="true" [disabled]="createForm.invalid" (click)="create()">Create</button>
-        </kendo-dialog-actions>
-      </kendo-dialog>
-    </div>
-  `,
+  templateUrl: './tenants.page.html',
+  styleUrls: ['./tenants.page.scss'],
 })
 export class TenantsPageComponent implements OnInit {
   private readonly store = inject(Store);

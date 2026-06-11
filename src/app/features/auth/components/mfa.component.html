@@ -1,0 +1,25 @@
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-[var(--bg-secondary)] via-[var(--bg-primary)] to-[var(--bg-secondary)] p-6">
+  <div class="w-full max-w-md rounded-3xl card-surface p-8 shadow-card">
+    <p class="text-xs uppercase tracking-[0.4em] text-lagoon mb-3">MFA</p>
+    <h1 class="text-2xl font-semibold text-theme-primary mb-1">Code verification</h1>
+    <p class="text-sm text-theme-muted mb-6">Enter the one-time code that was sent to you.</p>
+
+    <form class="space-y-4" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <label class="block text-sm font-medium text-theme-primary">
+        Code MFA
+        <input kendoTextBox formControlName="code" maxlength="10" class="mt-1 w-full" />
+      </label>
+
+      <button
+        kendoButton
+        type="submit"
+        [primary]="true"
+        [disabled]="form.invalid || (!!(loading$ | async))"
+        class="w-full"
+      >
+        {{ (loading$ | async) ? "Verifying..." : "Verify" }}
+      </button>
+      <p class="text-sm text-rose-500" *ngIf="(error$ | async) as error">{{ error }}</p>
+    </form>
+  </div>
+</div>
