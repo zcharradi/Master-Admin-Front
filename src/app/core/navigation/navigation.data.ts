@@ -66,12 +66,91 @@ export const defaultNavigation: FuseNavigationItem[] = [
         ],
     },
     {
-        id: 'configuration',
-        title: 'Configuration',
-        type: 'group',
-        icon: 'heroicons_outline:wrench-screwdriver',
-        children: [
-
-        ],
-    },
+    id: 'master-data',
+    title: 'Master Data',
+    type: 'group',
+    icon: 'heroicons_outline:circle-stack',
+    children: [
+        {
+            id: 'operations',
+            title: 'Operations',
+            type: 'collapsable',   
+            icon: 'heroicons_outline:cog-6-tooth',
+            link: '/operations',
+            children: [
+                {
+                    id: 'operations-translation',
+                    title: 'Translation',
+                    type: 'basic',
+                    icon: 'heroicons_outline:language',
+                    link: '/operations/translation',
+                }
+            ]
+        },
+        {
+            id: 'articles',
+            title: 'Articles',
+            type: 'collapsable',
+            icon: 'heroicons_outline:document-text',
+            link: '/articles',
+            children: [
+                {
+                    id: 'articles-translation',
+                    title: 'Translation',
+                    type: 'basic',
+                    icon: 'heroicons_outline:language',
+                    link: '/articles/translation',
+                }
+            ]
+        },
+        {
+            id: 'chart-of-accounts',
+            title: 'Chart of Accounts',
+            type: 'collapsable',
+            icon: 'heroicons_outline:book-open',
+            link: '/chart-of-accounts',
+            children: [
+                {
+                    id: 'chart-of-accounts-translation',
+                    title: 'Translation',
+                    type: 'basic',
+                    icon: 'heroicons_outline:language',
+                    link: '/chart-of-accounts/translation',
+                }
+            ]
+        },
+        {
+            id: 'vat',
+            title: 'VAT / TVA',
+            type: 'collapsable',
+            icon: 'heroicons_outline:receipt-percent',
+            link: '/vat',
+            children: [
+                {
+                    id: 'vat-translation',
+                    title: 'Translation',
+                    type: 'basic',
+                    icon: 'heroicons_outline:language',
+                    link: '/vat/translation',
+                }
+            ]
+        },
+        {
+            id: 'documents',
+            title: 'Documents',
+            type: 'collapsable',
+            icon: 'heroicons_outline:document-text',
+            link: '/documents',
+            children: [
+                {
+                    id: 'documents-translation',
+                    title: 'Translation',
+                    type: 'basic',
+                    icon: 'heroicons_outline:language',
+                    link: '/documents/translation',
+                }
+            ]
+        },
+    ],
+},
 ];
