@@ -55,6 +55,7 @@ export class IndustriesEffects {
       id: String(dto.id ?? ""),
       code: dto.codeIndustry ?? undefined,
       name: dto.labelIndustry ?? undefined,
+      description: dto.descriptionIndustry ?? undefined,
     };
   }
 

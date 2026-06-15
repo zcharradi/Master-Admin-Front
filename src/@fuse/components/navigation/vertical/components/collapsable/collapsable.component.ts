@@ -253,6 +253,21 @@ export class FuseVerticalNavigationCollapsableItemComponent implements OnInit, O
     /**
      * Toggle collapsable
      */
+    onItemClick(): void
+    {
+        if ( this.item.disabled )
+        {
+            return;
+        }
+
+        if ( this.item.link && !this.item.externalLink )
+        {
+            this._router.navigateByUrl(this.item.link);
+        }
+
+        this.toggleCollapsable();
+    }
+
     toggleCollapsable(): void
     {
         // Toggle collapse/expand

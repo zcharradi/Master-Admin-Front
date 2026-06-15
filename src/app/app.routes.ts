@@ -79,6 +79,16 @@ export const appRoutes: Routes = [
         loadChildren: () =>
           import('./features/references/references.routes').then((m) => m.REFERENCE_ROUTES),
       },
+       {
+        path: 'operations',
+        loadChildren: () =>
+          import('./features/operations/operations.routes').then((m) => m.OPERATION_ROUTES),
+      },
+      {
+        path: 'articles',
+        loadChildren: () =>
+          import('./features/articles/articles.routes').then((m) => m.ARTICLES_ROUTES),
+      },
       { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
     ],
   },

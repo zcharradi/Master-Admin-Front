@@ -7,7 +7,7 @@
         class="fuse-vertical-navigation-item"
         [ngClass]="{'fuse-vertical-navigation-item-disabled': item.disabled}"
         [matTooltip]="item.tooltip || ''"
-        (click)="toggleCollapsable()">
+        (click)="onItemClick()">
 
         <!-- Icon -->
         <ng-container *ngIf="item.icon">

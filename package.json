@@ -8,7 +8,11 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "swagger:download": "curl -k -o swagger.json https://localhost:8080/swagger/v1/swagger.json",
-    "swagger:generate": "npm run swagger:download && openapi-generator generate -g typescript-angular -i swagger.json -o swagger-api -p apiModulePrefix=Master && del swagger.json"
+    "swagger:dms:download": "curl -k -o swagger.json https://localhost:8081/swagger/v1/swagger.json",
+
+    "swagger:generate": "npm run swagger:download && openapi-generator generate -g typescript-angular -i swagger.json -o swagger-api -p apiModulePrefix=Master && del swagger.json",
+      "swagger:dms:generate": "npm run swagger:dms:download && openapi-generator generate -g typescript-angular -i swagger.json -o swagger-api-dms -p apiModulePrefix=Dms && del swagger.json"
+
   },
   "prettier": {
     "printWidth": 100,
