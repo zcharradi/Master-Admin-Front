@@ -1,0 +1,116 @@
+<div class="ops-container">
+
+  <!-- ═══ GRID VIEW ═══ -->
+  <ng-container *ngIf="!selectedIndustry">
+    <h1 class="ops-title">Operations</h1>
+    <p class="ops-subtitle">Pick an industry to configure activities and file types.</p>
+
+    <div *ngIf="loadingIndustries" class="ops-state">Loading...</div>
+    <div *ngIf="industryError" class="ops-state ops-state--error">{{ industryError }}</div>
+
+    <div class="industry-grid" *ngIf="!loadingIndustries">
+
+      <!-- All Industries -->
+      <div class="industry-card" (click)="selectIndustry(null)">
+        <div class="industry-icon industry-icon--dark">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <rect x="3" y="3" width="7" height="7" rx="1" fill="currentColor"/>
+            <rect x="14" y="3" width="7" height="7" rx="1" fill="currentColor"/>
+            <rect x="3" y="14" width="7" height="7" rx="1" fill="currentColor"/>
+            <rect x="14" y="14" width="7" height="7" rx="1" fill="currentColor"/>
+          </svg>
+        </div>
+        <h3 class="industry-name">All industries</h3>
+        <p class="industry-desc">Shared baseline config</p>
+      </div>
+
+      <!-- Dynamic industries from DB -->
+      <div
+        class="industry-card"
+        *ngFor="let ind of industries"
+        (click)="selectIndustry(ind)"
+      >
+        <div class="industry-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M3 21V8l9-5 9 5v13H3z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+            <rect x="9" y="13" width="6" height="8" rx="0.5" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <h3 class="industry-name">{{ ind.labelIndustry }}</h3>
+        <p class="industry-desc">Section details</p>
+      </div>
+
+      <!-- New Industry card -->
+      <div class="industry-card industry-card--new" (click)="openAddModal()">
+        <div class="industry-icon industry-icon--plus">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3 class="industry-name">New industry</h3>
+      </div>
+
+    </div>
+  </ng-container>
+
+  <!-- ═══ ACTIVITIES VIEW ═══ -->
+  <ng-container *ngIf="selectedIndustry !== undefined">
+    <div class="ops-header">
+      <button class="back-btn" (click)="goBack()">
+        ← Back
+      </button>
+      <div>
+        <h1 class="ops-title">
+          {{ selectedIndustry ? selectedIndustry.labelIndustry : 'All Industries' }}
+        </h1>
+        <p class="ops-subtitle">Activities from <strong>tn_Activities</strong></p>
+      </div>
+      <button class="refresh-btn" (click)="loadActivities()">Actualiser</button>
+    </div>
+
+    <div *ngIf="loadingActivities" class="ops-state">Chargement...</div>
+    <div *ngIf="activityError" class="ops-state ops-state--error">{{ activityError }}</div>
+
+    <div class="table-wrapper" *ngIf="!loadingActivities && !activityError && activities.length">
+      <table>
+        <thead>
+          <tr><th *ngFor="let col of columns">{{ col | titlecase }}</th></tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of activities">
+            <td *ngFor="let col of columns">{{ toDisplay(row[col]) }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div *ngIf="!loadingActivities && !activityError && !activities.length" class="ops-state">
+      Aucune activité trouvée.
+    </div>
+  </ng-container>
+
+  <!-- ═══ MODAL ═══ -->
+  <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <h2 class="modal-title">New Industry</h2>
+
+      <label class="field-label">Code *</label>
+      <input class="field-input" [(ngModel)]="form.codeIndustry" placeholder="e.g. HEALTH" />
+
+      <label class="field-label">Label *</label>
+      <input class="field-input" [(ngModel)]="form.labelIndustry" placeholder="e.g. Healthcare" />
+
+      <label class="field-label">Description</label>
+      <textarea class="field-input" [(ngModel)]="form.descriptionIndustry" rows="3"
+        placeholder="Short description..."></textarea>
+
+      <div class="modal-actions">
+        <button class="btn btn--outline" (click)="closeModal()">Cancel</button>
+        <button class="btn btn--primary" (click)="saveIndustry()"
+          [disabled]="!form.codeIndustry || !form.labelIndustry || saving">
+          {{ saving ? 'Saving...' : 'Save' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
