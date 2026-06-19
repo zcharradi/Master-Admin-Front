@@ -16,6 +16,10 @@
       "@environments/*": ["environments/*"],
       "@swagger/*": ["../swagger-api/*"],
       "@swagger": ["../swagger-api"],
+        "@swagger-dms/*": ["../swagger-api-dms/*"],
+
+        "@swagger-dms": ["../swagger-api-dms"],
+
       "@fuse": ["@fuse/index.ts"],
       "@fuse/*": ["@fuse/*"]
     }

@@ -1,4 +1,3 @@
-// articles.service.ts
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -9,42 +8,55 @@ export interface Industry {
   codeIndustry: string;
   labelIndustry: string;
   descriptionIndustry?: string;
-  profilIndustry?: number;
 }
 
-// operations.service.ts — adapte si besoin
+export interface Article {
+  codeArticle: number;
+  libelleArticle: string;
+  descriptionArticle?: string;
+  categorieArticle?: string;
+  industryId?: number;
+   addNewTime?: string;   
+  editTime?: string;   
+}
+
 export interface CreateIndustryDto {
   codeIndustry: string;
   labelIndustry: string;
   descriptionIndustry?: string;
-  profilIndustry?: number;
-  session?: string;        // ← ajoute si le backend l'exige
 }
-export interface Activity {
-  [key: string]: any;
+
+export interface ProductServiceCategory {
+  id: number;
+  label: string;
+  industryId: number;
+  isDefault: boolean;
 }
+
+// dans la classe articlesService, ajouter cette méthode :
+
+
 
 @Injectable({ providedIn: 'root' })
 export class articlesService {
-  private readonly http       = inject(HttpClient);
-  private readonly masterBase = environment.apiBaseUrl;    // https://localhost:8080
-  private readonly dmsBase    = environment.dmsApiBaseUrl; // https://localhost:8081
+  private readonly http = inject(HttpClient);
+  private readonly masterBase = environment.apiBaseUrl;
+  private readonly dmsBase = environment.dmsApiBaseUrl;
 
-  // Récupère le token JWT stocké
   private getAuthHeaders(): HttpHeaders {
     const token = localStorage.getItem(environment.tokenStorageKey);
     return new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
     });
   }
 
-  // ── Industries → Master API (port 8080) ──────────────────────
-  // POST /MasterERPIndustries/GetAll avec DataSourceRequest vide
+  // ===== INDUSTRY =====
+
   getIndustries(): Observable<any> {
     return this.http.post<any>(
       `${this.masterBase}/MasterERPIndustries/GetAll`,
-      {},  // DataSourceRequest vide
+      {},
       { headers: this.getAuthHeaders() }
     );
   }
@@ -57,8 +69,42 @@ export class articlesService {
     );
   }
 
-  // ── Activities → DMS API (port 8081) ─────────────────────────
-  getActivities(): Observable<Activity[]> {
-    return this.http.get<Activity[]>(`${this.dmsBase}/api/Activities`);
+  // ===== ARTICLES =====
+
+  getArticles(industryId?: number): Observable<Article[]> {
+    if (industryId) {
+      return this.http.get<Article[]>(
+        `${this.dmsBase}/api/Article/industry/${industryId}`
+      );
+    }
+    return this.http.get<Article[]>(`${this.dmsBase}/api/Article`);
   }
+
+  addArticle(article: Article): Observable<Article> {
+    return this.http.post<Article>(`${this.dmsBase}/api/Article`, article);
+  }
+
+  updateArticle(article: Article): Observable<void> {
+    return this.http.put<void>(`${this.dmsBase}/api/Article`, article);
+  }
+
+  deleteArticle(id: number): Observable<void> {
+    return this.http.delete<void>(
+      `${this.dmsBase}/api/Article/${id}`
+    );
+  }
+
+
+// dans la classe articlesService, ajouter cette méthode :
+getCategories(industryId: number): Observable<ProductServiceCategory[]> {
+  return this.http.get<ProductServiceCategory[]>(
+    `${this.dmsBase}/api/Article/categories/by-industry/${industryId}`
+  );
+}
+getAllCategories(): Observable<ProductServiceCategory[]> {
+  return this.http.get<ProductServiceCategory[]>(
+    `${this.dmsBase}/api/Article/categories/all`
+  );
+}
+
 }

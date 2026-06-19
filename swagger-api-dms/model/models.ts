@@ -1,6 +1,7 @@
 export * from './activityDto';
 export * from './aggregateDescriptor';
 export * from './aggregateFunction';
+export * from './articleDto';
 export * from './assembly';
 export * from './callingConventions';
 export * from './clientHandlerDescriptor';

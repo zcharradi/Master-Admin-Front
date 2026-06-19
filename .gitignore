@@ -47,7 +47,8 @@ Thumbs.db
 /swagger-api-finance/
 /swagger-api-invoicing/
 /swagger-api-edm/
-/swagger-api-qms/
+/swagger-api-dms/
+/swagger-api-dms
 /swagger-api-operation/
 /swagger-api-crm/
 /swagger-api-rh/
