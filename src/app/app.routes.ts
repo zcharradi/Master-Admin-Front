@@ -90,8 +90,29 @@ export const appRoutes: Routes = [
           import('./features/articles/articles.routes').then((m) => m.ARTICLES_ROUTES),
       },
       { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
+      {
+  path: 'chart-of-accounts',
+  loadChildren: () =>
+    import('./features/charts/charts.routes').then((m) => m.CHART_OF_ACCOUNTS_ROUTES),
+},
+{
+  path: 'vat',
+  loadChildren: () =>
+    import('./features/tva/tva.routes').then((m) => m.TVA_ROUTES),
+},
+{
+  path: 'documents',
+  loadChildren: () =>
+    import('./features/documents/documents.routes').then((m) => m.DOCUMENTS_ROUTES),
+},
     ],
   },
 
   { path: '**', redirectTo: 'dashboard' },
+  {
+  path: 'translation',
+  loadChildren: () =>
+    import('./features/translation/translation.routes').then((m) => m.TRANSLATION_ROUTES),
+},
+
 ];

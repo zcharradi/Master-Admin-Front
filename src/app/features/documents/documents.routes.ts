@@ -1,15 +1,15 @@
 import { Routes } from '@angular/router';
-import { articles } from './articles';
+import { Documents } from './documents'; // adapte le nom du component
 import { TranslationComponent } from '../translation/translation';
 
-export const ARTICLES_ROUTES: Routes = [
+export const DOCUMENTS_ROUTES: Routes = [
   {
     path: '',
-    component: articles,
+    component: Documents,
   },
   {
     path: 'translation',
     component: TranslationComponent,
-    data: { menu: 'articles' }
+    data: { menu: 'dossiers' }
   }
 ];

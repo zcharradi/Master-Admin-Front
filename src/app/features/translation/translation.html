@@ -1,0 +1,86 @@
+<div class="ops-container">
+
+  <div class="breadcrumb">
+    <span class="breadcrumb-item">Translations</span>
+    <span class="breadcrumb-separator">›</span>
+    <span class="breadcrumb-item breadcrumb-item--active">{{ menuLabel }}</span>
+  </div>
+
+  <h1 class="ops-title">Translations</h1>
+  <p class="ops-subtitle">Manage French and German translations.</p>
+
+  <div *ngIf="error" class="ops-state ops-state--error">{{ error }}</div>
+  <div *ngIf="successMessage" class="alert alert--success">{{ successMessage }}</div>
+
+  <div class="table-wrapper">
+
+    <div class="translation-toolbar">
+      <div class="toolbar-actions">
+
+        <ng-container *ngIf="hasDirtyRows">
+          <button class="btn-cancel-all" (click)="cancelAll()" [disabled]="saving">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+              <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
+            Cancel Changes
+          </button>
+          <button class="btn-save-all" (click)="saveAll()" [disabled]="saving">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+              <path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            {{ saving ? 'Saving...' : 'Save Changes' }}
+          </button>
+        </ng-container>
+
+        <button class="refresh-btn" (click)="loadTranslations()" [disabled]="saving">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+            <path d="M1 4v6h6M23 20v-6h-6" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M20.49 9A9 9 0 005.64 5.64L1 10M23 14l-4.64 4.36A9 9 0 013.51 15" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Refresh
+        </button>
+
+      </div>
+    </div>
+
+    <kendo-grid
+      *ngIf="gridVisible"
+      #grid
+      [kendoGridBinding]="translations"
+      [loading]="loading"
+      filterable="menu"
+      [navigable]="true"
+      [kendoGridInCellEditing]="createFormGroup"
+      (cellClose)="onCellClose($event)"
+      [rowClass]="rowClass"
+      [pageable]="{ pageSizes: pageSizes }"
+      [pageSize]="pageSize"
+      [sortable]="true"
+    >
+      <kendo-grid-column field="sourceLabel" title="Source Label" [width]="220" [editable]="false">
+      </kendo-grid-column>
+
+      <kendo-grid-column field="editFr" title="🇫🇷 French">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <span *ngIf="dataItem.editFr" class="translation-text">{{ dataItem.editFr }}</span>
+          <span *ngIf="!dataItem.editFr" class="no-desc">Not translated</span>
+        </ng-template>
+        <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup">
+          <input class="k-input k-textbox" [formControl]="formGroup.get('editFr')" placeholder="French translation" />
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column field="editDe" title="🇩🇪 German">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <span *ngIf="dataItem.editDe" class="translation-text">{{ dataItem.editDe }}</span>
+          <span *ngIf="!dataItem.editDe" class="no-desc">Not translated</span>
+        </ng-template>
+        <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup">
+          <input class="k-input k-textbox" [formControl]="formGroup.get('editDe')" placeholder="German translation" />
+        </ng-template>
+      </kendo-grid-column>
+
+    </kendo-grid>
+
+  </div>
+</div>

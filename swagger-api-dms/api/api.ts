@@ -4,4 +4,6 @@ export * from './article.service';
 import { ArticleService } from './article.service';
 export * from './department.service';
 import { DepartmentService } from './department.service';
-export const APIS = [ActivitiesService, ArticleService, DepartmentService];
+export * from './translation.service';
+import { TranslationService } from './translation.service';
+export const APIS = [ActivitiesService, ArticleService, DepartmentService, TranslationService];

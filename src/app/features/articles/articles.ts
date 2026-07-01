@@ -5,12 +5,12 @@ import { ArticleService } from '@swagger-dms/api/article.service';
 import { MasterERPIndustriesService } from '@swagger/api/masterERPIndustries.service';
 import { MasterERPIndustriesDTO } from '@swagger';
 import { ArticleDto } from '@swagger-dms';
-
+import { KENDO_GRID } from '@progress/kendo-angular-grid';
 
 @Component({
   selector: 'app-articles',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,KENDO_GRID],
   templateUrl: './articles.html',
   styleUrls: ['./articles.scss'],
 })
@@ -30,7 +30,7 @@ export class articles implements OnInit {
 
   selectedIndustry: MasterERPIndustriesDTO | null | undefined = undefined;
 
-  // ✅ MODAL INDUSTRIE
+  //  MODAL INDUSTRIE
   showModal = false;
   saving = false;
 
@@ -40,7 +40,7 @@ export class articles implements OnInit {
     descriptionIndustry: '',
   };
 
-  // ✅ MODAL ARTICLE
+  //  MODAL ARTICLE
   showArticleModal = false;
   editingArticleId: number | null = null;
 
@@ -74,7 +74,7 @@ export class articles implements OnInit {
     this.loadIndustries();
   }
 
-  // ✅ LOAD INDUSTRIES
+  //  LOAD INDUSTRIES
   loadIndustries(): void {
     this.loadingIndustries = true;
     this.industryError = null;
@@ -92,7 +92,7 @@ export class articles implements OnInit {
     });
   }
 
-  // ✅ SELECT INDUSTRY
+  //  SELECT INDUSTRY
   selectIndustry(ind: MasterERPIndustriesDTO | null): void {
     this.selectedIndustry = ind;
     
@@ -104,38 +104,44 @@ export class articles implements OnInit {
     }
   }
 
-  // ✅ BACK
+  //  BACK
   goBack(): void {
     this.selectedIndustry = undefined;
     this.articles = [];
     this.articleError = null;
   }
 
-  // ✅ LOAD ARTICLES
-  loadArticles(industryId?: number): void {
-    this.loadingArticles = true;
-    this.articleError = null;
+  //  LOAD ARTICLES
+  gridVisible = true;
 
-    const obs = (industryId === null || industryId === undefined)
-      ? this.svc.apiArticleGetAllPost()
-      : this.svc.apiArticleIndustryIndustryIdGet(industryId);
+loadArticles(industryId?: number): void {
+  this.loadingArticles = true;
+  this.articleError = null;
+  this.gridVisible = false;  // ← détruire le grid
 
-    obs.subscribe({
-      next: (res:any) => {
-        const list = Array.isArray(res) ? res : (res?.data ?? res?.items ?? []);
-        this.articles = list as ArticleDto[];
-        console.log('DATA ✅', res);
-        this.loadingArticles = false;
-      },
-      error: (err:any) => {
-        console.error(err);
-        this.articleError = 'Erreur chargement articles ❌';
-        this.loadingArticles = false;
-      }
-    });
-  }
+  const obs = (industryId === null || industryId === undefined)
+    ? this.svc.apiArticleGetAllPost({} as any)
+    : this.svc.apiArticleIndustryIndustryIdGet(industryId);
 
-  // ✅ OPEN MODAL ADD ARTICLE
+  obs.subscribe({
+    next: (res: any) => {
+      const list = Array.isArray(res) ? res : (res?.data ?? res?.items ?? []);
+      this.articles = list as ArticleDto[];
+      this.loadingArticles = false;
+
+      setTimeout(() => {
+        this.gridVisible = true;  // ← recréer le grid sans filtre
+      }, 50);
+    },
+    error: (err: any) => {
+      this.articleError = 'Erreur chargement articles ❌';
+      this.loadingArticles = false;
+      this.gridVisible = true;
+    }
+  });
+}
+
+  //  OPEN MODAL ADD ARTICLE
   addArticle(): void {
     this.editingArticleId = null;
     this.articleForm = this.createEmptyArticle();
@@ -152,7 +158,7 @@ export class articles implements OnInit {
 
 
 
-  // ✅ SAVE ARTICLE (ADD OR UPDATE)
+  //  SAVE ARTICLE (ADD OR UPDATE)
   saveArticle(): void {
    if (!this.articleForm.libelleArticle ) {
     return;
@@ -217,13 +223,13 @@ export class articles implements OnInit {
     }
   }
 
-  // ✅ CLOSE MODAL ARTICLE
+  //  CLOSE MODAL ARTICLE
   closeArticleModal(): void {
     this.showArticleModal = false;
     this.editingArticleId = null;
   }
 
-  // ✅ DELETE ARTICLE
+  //  DELETE ARTICLE
   deleteArticle(id: any): void {
     const ok = confirm('Voulez-vous supprimer cet article ?');
     if (!ok) return;
@@ -241,7 +247,7 @@ export class articles implements OnInit {
     });
   }
 
-  // ✅ MODAL INDUSTRY
+  //  MODAL INDUSTRY
   openAddModal(): void {
     this.showModal = true;
   }
@@ -266,7 +272,7 @@ export class articles implements OnInit {
     });
   }
   confirmDelete(id: number | undefined): void {
-  if (id === undefined) return; // ✅ protection
+  if (id === undefined) return; // 
   this.articleToDeleteId = id;
   this.showDeleteModal = true;
 }
@@ -274,6 +280,9 @@ export class articles implements OnInit {
 cancelDelete(): void {
   this.showDeleteModal = false;
   this.articleToDeleteId = null;
+}
+log(item: any) { 
+  console.log('EDIT item:', item); 
 }
 
 confirmDeleteAction(): void {

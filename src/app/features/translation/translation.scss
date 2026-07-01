@@ -1,0 +1,266 @@
+@use '../articles/articles.scss';
+
+// ── Field Input ───────────────────────────────────────────
+.field-input {
+  width: 100%;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  outline: none;
+  box-sizing: border-box;
+  font-family: inherit;
+  background: #fafafa;
+  transition: all 0.15s;
+
+  &:focus {
+    border-color: #4543d8;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(69, 67, 216, 0.12);
+  }
+}
+
+// ── Toolbar ───────────────────────────────────────────────
+.translation-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+// ── Refresh ───────────────────────────────────────────────
+.refresh-btn {
+  background: #4543d8;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.6rem 1.5rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.15s;
+  letter-spacing: 0.01em;
+
+  &:hover {
+    background: #3735b8;
+    box-shadow: 0 4px 16px rgba(69, 67, 216, 0.35);
+    transform: translateY(-1px);
+  }
+  &:active { transform: translateY(0); }
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+// ── Save Changes ──────────────────────────────────────────
+.btn-save-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #1e1e2e;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.6rem 1.4rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &:hover:not(:disabled) {
+    background: #2d2d44;
+    box-shadow: 0 4px 16px rgba(30, 30, 46, 0.35);
+    transform: translateY(-1px);
+  }
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// ── Cancel Changes ────────────────────────────────────────
+.btn-cancel-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #fff;
+  color: #6b7280;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 0.6rem 1.4rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &:hover:not(:disabled) {
+    border-color: #9ca3af;
+    color: #374151;
+    transform: translateY(-1px);
+  }
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// ── Alert Success ─────────────────────────────────────────
+.alert--success {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: linear-gradient(135deg, #1a1a2e, #1a1a2e);
+  color: #fff;
+  padding: 16px 24px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  min-width: 320px;
+  max-width: 400px;
+  box-shadow: 0 8px 24px rgba(69, 67, 216, 0.35);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-left: 4px solid #a5b4fc;
+  animation: slideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+  &::before {
+    content: '✓';
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    font-size: 14px;
+    font-weight: bold;
+    flex-shrink: 0;
+  }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(100px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+// ── Translation text ──────────────────────────────────────
+.th-lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.flag { font-size: 1rem; }
+
+.source-label-cell {
+  font-weight: 600;
+  color: #111;
+}
+
+.translation-text {
+  color: #374151;
+  font-weight: 500;
+}
+
+.no-desc {
+  color: #d1d5db;
+  font-style: italic;
+  font-size: 0.8rem;
+}
+
+.actions-cell {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+// ── Ligne modifiée ────────────────────────────────────────
+.dirty-row {
+  background: #fffbeb !important;
+
+  td {
+    border-bottom-color: #fde68a;
+  }
+}
+
+// ── Kendo Grid customisation ──────────────────────────────
+::ng-deep {
+  .k-grid td,
+  .k-grid th {
+    padding: 0.85rem 0.75rem !important;
+    font-size: 0.875rem;
+  }
+
+  .k-grid-header {
+    background: #f9fafb;
+    border-bottom: 2px solid #e5e7eb;
+
+    th {
+      font-weight: 700;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #6b7280;
+    }
+  }
+
+  .k-grid tr.dirty-row td {
+    background: #fffbeb;
+  }
+
+  .k-grid .k-input,
+  .k-grid .k-textbox {
+    height: 40px;
+    font-size: 0.875rem;
+    border-radius: 6px;
+    border-color: #4543d8;
+    box-shadow: 0 0 0 3px rgba(69, 67, 216, 0.12);
+    width: 100%;
+  }
+
+  .k-grid .k-grid-filter-menu .k-icon,
+  .k-grid .k-header-column-menu .k-icon {
+    color: #4543d8;
+  }
+
+  .k-grid {
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+}
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.85rem;
+
+  &-item {
+    color: #6b7280;
+
+    &--active {
+      color: #4543d8;
+      font-weight: 600;
+    }
+  }
+
+  &-separator {
+    color: #9ca3af;
+  }
+}

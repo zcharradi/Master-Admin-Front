@@ -8,6 +8,7 @@ import { provideState, provideStore } from '@ngrx/store';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { provideRouterStore } from '@ngrx/router-store';
 import { BASE_PATH, Configuration } from '@swagger';
+import { BASE_PATH as DMS_BASE_PATH } from '@swagger-dms';
 import { provideFuse } from '@fuse';
 
 import { appRoutes } from './app.routes';
@@ -34,11 +35,17 @@ export const appConfig: ApplicationConfig = {
     provideState(authFeature),
     provideEffects([AuthEffects]),
     { provide: LOCALE_ID, useValue: 'en-US' },
+
+    // ✅ Master API (8080)
     { provide: BASE_PATH, useValue: environment.apiBaseUrl },
     {
       provide: Configuration,
       useFactory: () => new Configuration({ basePath: environment.apiBaseUrl, withCredentials: true }),
     },
+
+    // ✅ DMS API (8081)
+    { provide: DMS_BASE_PATH, useValue: environment.dmsApiBaseUrl },
+
     provideStoreDevtools({
       maxAge: 25,
       trace: false,
