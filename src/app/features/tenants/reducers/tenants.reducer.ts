@@ -10,6 +10,7 @@ export interface Tenant {
   uuid: string;
   entityName: string;
   dbInstanceId?: string;
+  dbLabel?: string;
   isActive: boolean;
   modules?: string[];
   industries?: string[];

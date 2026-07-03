@@ -1,1 +1,224 @@
-// Tenants page styles
+$brand-color: #14182c;
+$hover-color: #3b82f6;
+
+:host ::ng-deep {
+
+  // ============================================
+  // 1. TOOLBAR
+  // ============================================
+  .custom-toolbar {
+    .toolbar-btn-brand {
+      color: $brand-color !important;
+      font-weight: 600;
+
+      .k-button-text { color: $brand-color !important; }
+      .k-button-icon, .k-icon, .k-svg-icon { color: $brand-color !important; }
+      svg, svg path, svg circle, svg rect, svg polygon {
+        fill: $brand-color !important;
+      }
+
+      &:hover, &:focus {
+        color: $hover-color !important;
+        background-color: rgba($brand-color, 0.06) !important;
+
+        .k-button-text { color: $hover-color !important; }
+        .k-button-icon, .k-icon, .k-svg-icon { color: $hover-color !important; }
+        svg, svg path, svg circle, svg rect, svg polygon {
+          fill: $hover-color !important;
+        }
+      }
+    }
+  }
+
+  // ============================================
+  // 2. ICÔNE FILTRE DANS LES EN-TÊTES
+  // ============================================
+  .core-grid-container {
+    .k-grid-header th,
+    .k-grid-header .k-header,
+    .k-grid-header .k-cell-inner,
+    .k-column-title-wrap {
+      button,
+      .k-icon-button,
+      .k-grid-filter,
+      .k-grid-filter-menu,
+      .k-column-menu,
+      .k-header-column-menu,
+      .k-svg-icon,
+      .k-icon {
+        color: $brand-color !important;
+        opacity: 1 !important;
+        border-radius: 4px;
+        transition: background-color 0.15s ease, color 0.15s ease;
+
+        svg {
+          fill: $brand-color !important;
+          path, circle, rect, polygon { fill: $brand-color !important; }
+        }
+
+        &:hover, &:focus, &.k-active {
+          color: $hover-color !important;
+          background-color: rgba($brand-color, 0.06) !important;
+
+          svg {
+            fill: $hover-color !important;
+            path, circle, rect, polygon { fill: $hover-color !important; }
+          }
+        }
+      }
+    }
+
+    .k-sort-icon {
+      color: $brand-color !important;
+      svg, svg path { fill: $brand-color !important; }
+    }
+
+    .k-pager-numbers-wrap,
+    .k-pager-nav {
+      .k-icon, .k-svg-icon {
+        color: $brand-color !important;
+        svg, svg path { fill: $brand-color !important; }
+      }
+    }
+  }
+}
+
+// ============================================
+// POPUPS GLOBALS (Rendus hors du composant : pas de ::ng-deep)
+// ============================================
+.column-chooser-panel {
+  width: 260px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  padding: 12px;
+  font-size: 13px;
+  z-index: 10000;
+}
+
+.column-chooser-search {
+  margin-bottom: 8px;
+  .k-textbox { width: 100%; }
+}
+
+.column-chooser-list {
+  max-height: 220px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 4px 0;
+}
+
+.column-chooser-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 4px;
+  cursor: pointer;
+  width: 100%;
+  span { flex: 1; }
+  input[type="checkbox"] {
+    accent-color: #14182c;
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+}
+
+.column-chooser-select-all {
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 8px;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.column-chooser-footer {
+  border-top: 1px solid #e5e7eb;
+  margin-top: 8px;
+  padding-top: 10px;
+}
+
+.column-chooser-count {
+  display: block;
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+.column-chooser-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  button { flex: 1; }
+}
+
+.export-menu-panel, .selection-menu-panel {
+  width: 280px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  padding: 6px;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+}
+
+.export-menu-panel { width: 180px; }
+
+.export-menu-item, .selection-menu-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 10px 12px;
+  font-size: 13.5px;
+  color: #14182c;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background-color 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background-color: #f3f4f6;
+  }
+  &:disabled {
+    color: #b0b3bd;
+    cursor: not-allowed;
+  }
+}
+.disposition-menu-panel {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  border-radius: 4px;
+  padding: 4px 0;
+  display: flex;
+  flex-direction: column;
+  min-width: 260px;
+
+  .disposition-menu-item {
+    background: transparent;
+    border: none;
+    justify-content: flex-start;
+    text-align: left;
+    padding: 10px 16px;
+    font-size: 14px;
+    color: #333333;
+    width: 100%;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: #f5f5f5;
+      color: #000000;
+    }
+
+    &:disabled {
+      color: #cccccc;
+      cursor: not-allowed;
+      background: transparent;
+    }
+  }
+}
